@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.scss';
 import { createApiClient, Ticket } from './api';
+import TicketListItem from './components/Ticket/ticket';
 
 export type AppState = {
 	tickets?: Ticket[],
@@ -12,15 +13,36 @@ const api = createApiClient();
 export class App extends React.PureComponent<{}, AppState> {
 
 	state: AppState = {
-		search: ''
+		search: '',
+		tickets: []
 	}
 
 	searchDebounce: any = null;
 
 	async componentDidMount() {
+		const tickets = (await api.getTickets()).map((ticket) => { return { ...ticket, show: true } });
+
 		this.setState({
-			tickets: await api.getTickets()
+			tickets
 		});
+	}
+
+	restoreHiddenTickets = () => {
+		const tickets = this.state.tickets as Ticket[];
+
+		this.setState({
+			tickets: tickets.map((ticket) => { return { ...ticket, show: true } })
+		})
+	}
+
+	updateShowTicket = (index: number) => {
+		return () => {
+			const tickets = this.state.tickets as Ticket[];
+
+			this.setState({
+				tickets: tickets.map((ticket, i) => i !== index ? ticket : { ...ticket, show: !ticket.show })
+			})
+		}
 	}
 
 	renderTickets = (tickets: Ticket[]) => {
@@ -30,13 +52,7 @@ export class App extends React.PureComponent<{}, AppState> {
 
 
 		return (<ul className='tickets'>
-			{filteredTickets.map((ticket) => (<li key={ticket.id} className='ticket'>
-				<h5 className='title'>{ticket.title}</h5>
-				<footer>
-					<p className='content'>{ticket.content}</p>
-					<div className='meta-data'>By {ticket.userEmail} | {new Date(ticket.creationTime).toLocaleString()}</div>
-				</footer>
-			</li>))}
+			{filteredTickets.map((ticket, index) => (ticket.show && <TicketListItem showTicket={this.updateShowTicket(index)} ticket={ticket} />))}
 		</ul>);
 	}
 
@@ -53,10 +69,10 @@ export class App extends React.PureComponent<{}, AppState> {
 
 	render() {
 		const { tickets } = this.state;
-		console.log(tickets);
 
 		return (<main>
 			<h1>Tickets List</h1>
+			<button onClick={this.restoreHiddenTickets}>Restore tickets</button>
 			<header>
 				<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)} />
 			</header>

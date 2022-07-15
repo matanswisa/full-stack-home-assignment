@@ -63,6 +63,16 @@ body {
 		font-size: 12px;
 	}
 
+	.hidden-ticket{
+		display: none;
+
+	}
+
+	.show-ticket{
+		display: inline-block;
+
+	}
+
 	.tickets {
 
 		margin: 0;
@@ -84,6 +94,11 @@ body {
 
 			&:hover {
 				box-shadow: 0 2px 6px 1px #d3d7da;
+				
+				.hidden-ticket{
+					display: inline-block;
+					background-color: #3899ec
+				}
 			}
 
 			.title {
@@ -97,7 +112,9 @@ body {
 			footer {
 
 				display: flex;
-				justify-content: space-between;
+				flex-direction: column;
+
+
 
 				.meta-data {
 					color: #7a92a5;
