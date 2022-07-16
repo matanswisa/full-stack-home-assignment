@@ -30,8 +30,8 @@ const asyncWrapper = (fn: RequestHandler): RequestHandler => (req, res, next) =>
     next(e);
   }
 }
-app.get('/', (req, res) => {
-  res.send('ok');
+app.get('/', async (req, res) => {
+
 });
 
 app.get(APIPath, (async (req, res) => {
@@ -42,6 +42,20 @@ app.get(APIPath, (async (req, res) => {
 
   res.json([...data, ...clonesTickets]);
 }));
+
+
+app.get('/tt', async (req, res) => {
+  console.log(req.params);
+  console.log(req.query);
+  // const {page} = req.params;
+  let num = req.query.page;
+  let ss = await db.getTicketsByPageNumber(0);
+  console.log(ss[ss.length - 1]);
+
+  res.status(200);
+  res.send('ok');
+
+});
 
 app.post(APICloneTicket, (async (req, res) => {
   // const { id, title, content, userEmail, creationTime, labels } = req.body;
