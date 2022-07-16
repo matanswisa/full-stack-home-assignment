@@ -12,7 +12,7 @@ export type AppState = {
 }
 
 
-const api = createApiClient();
+export const api = createApiClient();
 
 
 export class App extends React.PureComponent<{}, AppState> {
@@ -57,10 +57,17 @@ export class App extends React.PureComponent<{}, AppState> {
 
 
 		return (<ul className='tickets'>
-			{filteredTickets.map((ticket, index) => (ticket.show && <TicketListItem showTicket={this.updateShowTicket(index)} ticket={ticket} />))}
+			{filteredTickets.map((ticket, index) => (ticket.show && <TicketListItem cloneTicket={this.cloneTicket} showTicket={this.updateShowTicket(index)} ticket={ticket} />))}
 		</ul>);
 	}
 
+	cloneTicket = (ticket: Ticket) => {
+		const { tickets } = this.state;
+		api.cloneTicket(ticket).then((status) => {
+			console.log(status);
+			this.setState({ tickets: [...(tickets as Ticket[]), ticket] });
+		});
+	}
 
 	onSearch = async (val: string, newPage?: number) => {
 

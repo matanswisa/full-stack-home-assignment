@@ -1,15 +1,18 @@
 import express, { RequestHandler } from 'express';
-import {json as bodyParserJson} from 'body-parser';
+import { json as bodyParserJson } from 'body-parser';
 import { dbClient } from './db';
-import { serverAPIPort, APIPath } from '@fed-exam/config';
+import { serverAPIPort, APIPath, APICloneTicket } from '@fed-exam/config';
+import { Ticket } from '../client/src/api';
 
 console.log('starting server', { serverAPIPort, APIPath });
 
 const app = express();
-
-const db = dbClient({filePath: './data.sqlite'});
+const db = dbClient({ filePath: './data.sqlite' });
 
 const PAGE_SIZE = 20;
+
+const clonesTickets: Ticket[] = [];
+
 
 app.use(bodyParserJson());
 
@@ -37,8 +40,15 @@ app.get(APIPath, (async (req, res) => {
   const page: number = req.query.page || 1;
   const data = await db.getTickets();
 
-  res.json(data);
+  res.json([...data, ...clonesTickets]);
 }));
+
+app.post(APICloneTicket, (async (req, res) => {
+  // const { id, title, content, userEmail, creationTime, labels } = req.body;
+  clonesTickets.push(req.body)
+  console.log(req.body.title);
+  res.status(200).send({ sucess: true, message: 'ok' });
+}))
 
 app.listen(serverAPIPort);
 console.log('server running', serverAPIPort)
