@@ -4,6 +4,7 @@ import { createApiClient, Ticket } from './api';
 import TicketListItem from './components/Ticket/ticket';
 import DarkModeToggle from './components/ToggleDarkMode';
 import { ThemeContext, } from './contexts/ThemeContext';
+import { darkTheme, lightTheme } from './constants/themes';
 
 export type AppState = {
 	tickets?: Ticket[];
@@ -77,23 +78,30 @@ export class App extends React.PureComponent<{}, AppState> {
 
 
 		return (
+			<ThemeContext.Consumer>{({ darkMode }) => {
+				return (
+					<div className='App' style={!darkMode ? lightTheme : darkTheme}>
+						<main>
+							<h1>Tickets List</h1>
 
-			<main>
-				<h1>Tickets List</h1>
+							<DarkModeToggle></DarkModeToggle>
 
-				<DarkModeToggle></DarkModeToggle>
-
-				<button onClick={this.restoreHiddenTickets}>Restore tickets</button>
-				<header>
-					<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)} />
-				</header>
-				{tickets ? <div className='results'>Showing {tickets.length} results</div> : null}
-				{tickets ? this.renderTickets(tickets) : <h2>Loading..</h2>}
-			</main>
-
+							<button onClick={this.restoreHiddenTickets}>Restore tickets</button>
+							<header>
+								<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)} />
+							</header>
+							{tickets ? <div className='results'>Showing {tickets.length} results</div> : null}
+							{tickets ? this.renderTickets(tickets) : <h2>Loading..</h2>}
+						</main>
+					</div>
+				)
+			}}
+			</ThemeContext.Consumer>
 
 		)
 	}
 }
+
+
 
 export default App;

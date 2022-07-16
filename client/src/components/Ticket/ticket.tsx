@@ -1,5 +1,7 @@
 import React from 'react';
 import { Ticket } from '../../api';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import { darkTheme, lightTheme } from '../../constants/themes';
 
 
 interface ListItemProps {
@@ -36,14 +38,21 @@ export default class TicketListItem extends React.Component<ListItemProps, ListI
         const ticket = this.state.ticket;
 
         return (
-            <li key={ticket.id} className='ticket'>
-                <h5 className='title'>{ticket.title}</h5>
-                <footer>
-                    <p className='content'>{ticket.content}</p>
-                    <div className='meta-data'>By {ticket.userEmail} | {new Date(ticket.creationTime).toLocaleString()}</div>
-                    <button className="hidden-ticket" onClick={this.props.showTicket}>HIDE</button>
-                </footer>
-            </li>);
+            <ThemeContext.Consumer>{({ darkMode }) => {
+                return (
+                    <li key={ticket.id} className='ticket' style={darkMode ? darkTheme : lightTheme}>
+                        <h5 className='title' style={darkMode ? darkTheme : lightTheme}>{ticket.title}</h5>
+                        <footer>
+                            <p className='content' style={darkMode ? darkTheme : lightTheme}>{ticket.content}</p>
+                            <div className='meta-data'>By {ticket.userEmail} | {new Date(ticket.creationTime).toLocaleString()}</div>
+                            <button className="hidden-ticket" onClick={this.props.showTicket}>HIDE</button>
+                        </footer>
+                    </li>
+                )
+            }}
+
+            </ThemeContext.Consumer>
+        );
     }
 
 }

@@ -12,13 +12,13 @@ export default class DarkModeToggle extends React.PureComponent<Props>{
 
     render() {
         return (
-            <ThemeContext.Consumer>{({ currentTheme, setThemeMode }) => {
+            <ThemeContext.Consumer>{({ darkMode, toggleDarkMode }) => {
                 return (
                     <>
-                        {currentTheme === 'light' ? 'light mode' : 'dark mode'}
+                        {darkMode ? 'dark mode' : 'light mode'}
                         <label className="switch">
                             <input type="checkbox" onChange={() => {
-                                setThemeMode(currentTheme == 'light' ? 'dark' : 'light');
+                                toggleDarkMode();
                             }} />
 
 

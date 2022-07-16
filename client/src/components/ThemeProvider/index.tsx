@@ -5,32 +5,37 @@ interface ProviderProps {
     children?: React.ReactElement;
 }
 
-export default class DarkModeContextProvider extends React.PureComponent<ProviderProps> {
+interface ProviderState {
+    darkMode: boolean;
+}
+
+export default class DarkModeContextProvider extends React.PureComponent<ProviderProps, ProviderState> {
 
     state = {
-        currentTheme: 'light'
+        darkMode: false
     }
 
-    setTheme = (theme: string) => {
-        console.log(theme);
+    toggleDarkMode = () => {
+        if (!this.state.darkMode) document.body.style.backgroundColor = 'black';
+        else document.body.style.backgroundColor = 'white';
 
         this.setState(() => {
-            return { currentTheme: theme }
+            return { darkMode: !this.state.darkMode }
         });
     }
 
     render() {
 
-        const { currentTheme } = this.state;
-        console.log(currentTheme);
+        const { darkMode } = this.state;
+        console.log(darkMode);
 
 
         return (
             <ThemeContext.Provider
                 value=
                 {{
-                    currentTheme,
-                    setThemeMode: this.setTheme,
+                    darkMode,
+                    toggleDarkMode: this.toggleDarkMode,
                 }}
             >
                 {this.props.children}
