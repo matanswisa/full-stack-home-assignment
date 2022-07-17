@@ -27,11 +27,10 @@ export const dbClient = (opts: { filePath: string }): DbClient => {
       return knex('data').select();
     },
     getTicketsByPageNumber(page: number): Promise<Ticket[]> {
-      // TODO: select data from offset by a given page number , do jumps of 20 and multiply the jumps by the given page number
-      let index = page - 1 < 0 ? 0 : page - 1;
       const jumps = 20;
+      console.log('offset=', page * jumps, 'limit=', jumps);
 
-      return knex('data').select().offset(index * jumps).limit((page + 1) * jumps);
+      return knex('data').select().offset(page * jumps).limit(jumps);
     }
   }
 }

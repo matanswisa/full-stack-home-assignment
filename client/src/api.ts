@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { APICloneTicket, APIRootPath, CloneTicketRequest } from '@fed-exam/config';
+import { APICloneTicket, APIPath, APIRootPath, CloneTicketRequest } from '@fed-exam/config';
 
 export type Ticket = {
     id: string,
@@ -14,6 +14,7 @@ export type Ticket = {
 export type ApiClient = {
     getTickets: () => Promise<Ticket[]>;
     cloneTicket: (ticket: Ticket) => Promise<AxiosResponse>;
+    getTicketsByPageNumber: (page: number) => Promise<Ticket[]>;
 }
 
 export const createApiClient = (): ApiClient => {
@@ -23,6 +24,9 @@ export const createApiClient = (): ApiClient => {
         },
         cloneTicket: (ticket: Ticket) => {
             return axios.post(CloneTicketRequest, { ...ticket }).then((res) => res.data);
+        },
+        getTicketsByPageNumber: (pageNumber: number) => {
+            return axios.get(`${APIRootPath}/by?page=${pageNumber}`).then((res) => res.data)
         }
     }
 }

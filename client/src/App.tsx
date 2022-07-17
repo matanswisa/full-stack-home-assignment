@@ -9,23 +9,26 @@ import { darkTheme, lightTheme } from './constants/themes';
 export type AppState = {
 	tickets?: Ticket[];
 	search: string;
+	page: number;
 }
 
 
 export const api = createApiClient();
+const MAX_PER_PAGE = 20;
 
 
 export class App extends React.PureComponent<{}, AppState> {
 
 	state: AppState = {
 		search: '',
-		tickets: []
+		tickets: [],
+		page: 0,
 	}
 
 	searchDebounce: any = null;
 
 	async componentDidMount() {
-		const tickets = (await api.getTickets()).map((ticket) => { return { ...ticket, show: true } });
+		const tickets = (await api.getTicketsByPageNumber(this.state.page)).map((ticket) => { return { ...ticket, show: true } });
 
 		this.setState({
 			tickets
@@ -35,9 +38,7 @@ export class App extends React.PureComponent<{}, AppState> {
 	restoreHiddenTickets = () => {
 		const tickets = this.state.tickets as Ticket[];
 
-		this.setState({
-			tickets: tickets.map((ticket) => { return { ...ticket, show: true } })
-		})
+		this.handleTicketsShow(tickets);
 	}
 
 	updateShowTicket = (index: number) => {
@@ -51,7 +52,6 @@ export class App extends React.PureComponent<{}, AppState> {
 	}
 
 	renderTickets = (tickets: Ticket[]) => {
-
 		const filteredTickets = tickets
 			.filter((t) => (t.title.toLowerCase() + t.content.toLowerCase()).includes(this.state.search.toLowerCase()));
 
@@ -80,9 +80,47 @@ export class App extends React.PureComponent<{}, AppState> {
 		}, 300);
 	}
 
-	render() {
-		const { tickets } = this.state;
+	increasePageCount = async () => {
+		await this.setState({ page: this.state.page + 1 });
+	}
 
+
+	handleTicketsPerPageAppearence = async () => {
+		const tickets = await (await api.getTicketsByPageNumber(this.state.page)).map(ticket => ({ ...ticket, show: true }));
+		await this.setState({ tickets: this.state.tickets?.map(ticket => { return { ...ticket, show: false } }) });
+		await this.setState((prevState) => {
+			return { tickets: [...tickets] }
+		});
+	}
+
+	onNextPageClick = async () => {
+		await this.increasePageCount();
+		await this.handleTicketsPerPageAppearence();
+	}
+
+	onPrevPageClick = async () => {
+		await this.decreasePageCount();
+		await this.handleTicketsPerPageAppearence();
+	}
+
+
+	decreasePageCount = async () => {
+		if (this.state.page)
+			await this.setState((prevState) => {
+				return { page: this.state.page - 1 }
+			});
+	}
+
+	handleTicketsShow = async (tickets: Ticket[]) => {
+		await this.setState({
+			tickets: tickets.map((ticket) => { return { ...ticket, show: true } })
+		})
+	}
+
+
+	render() {
+		const { tickets, page } = this.state;
+		const results = tickets?.length as number;
 
 		return (
 			<ThemeContext.Consumer>{({ darkMode }) => {
@@ -90,6 +128,10 @@ export class App extends React.PureComponent<{}, AppState> {
 					<div className='App' style={!darkMode ? lightTheme : darkTheme}>
 						<main>
 							<h1>Tickets List</h1>
+
+							<button onClick={this.onPrevPageClick} disabled={!page}>Previous page</button>
+							<button onClick={this.onNextPageClick} disabled={results < MAX_PER_PAGE}>Next page</button>
+							<h4>Page Number:{this.state.page + 1}</h4>
 
 							<DarkModeToggle></DarkModeToggle>
 
