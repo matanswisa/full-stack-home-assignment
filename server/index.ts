@@ -6,7 +6,7 @@ import { Ticket } from '../client/src/api';
 
 console.log('starting server', { serverAPIPort, APIPath });
 
-const app = express();
+export const app = express();
 const db = dbClient({ filePath: './data.sqlite' });
 
 const PAGE_SIZE = 20;
@@ -62,5 +62,6 @@ app.post(APICloneTicket, (async (req, res) => {
 }))
 
 app.listen(serverAPIPort);
+
 console.log('server running', serverAPIPort)
 

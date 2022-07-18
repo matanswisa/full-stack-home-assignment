@@ -22,5 +22,5 @@
   "include": [
 	  "types.d.ts",
 	  "*.ts"
-, "tests/db.test.ts"	]
+,"./jest.config.js","tests/db.test.ts"]
 }

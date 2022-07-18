@@ -1,11 +1,28 @@
+import request from 'supertest';
+import Knex from 'knex';
+import { app } from '..';
 
-describe('check a simple test', () => {
-    // it('this suppose to fail', () => {
-    //     expect(5 + 5).toBe(2);
-    // })
-    it('this is suppose to work', () => {
-        expect(5 + 5).toBe(10);
+
+// let api: request.SuperTest<request.Test> | null = null;
+
+describe('Get All Posts by a page number', () => {
+
+    console.log('lol');
+    let api: request.SuperTest<request.Test>;
+
+    beforeEach(async () => {
+        api = request(app);
+        const knex = Knex({
+            client: 'sqlite3',
+            connection: ":memory:",
+        });
     })
-})
 
+    describe('GET /api/tickets/by?page=', () => {
+        it("should respone with status code 200 if successful", () => {
+            api.get('/api/tickets/by?page=0').expect(400);
+        })
+    })
+
+})
 
