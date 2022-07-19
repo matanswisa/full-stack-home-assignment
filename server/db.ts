@@ -28,7 +28,8 @@ export const dbClient = (opts: { filePath: string }): DbClient => {
     },
     getTicketsByPageNumber(page: number): Promise<Ticket[]> {
       const jumps = 20;
-      console.log('offset=', page * jumps, 'limit=', jumps);
+
+      if (page < 0 || isNaN(page)) throw new Error("Invalid type or value of page");
 
       return knex('data').select().offset(page * jumps).limit(jumps);
     }

@@ -30,6 +30,7 @@ const asyncWrapper = (fn: RequestHandler): RequestHandler => (req, res, next) =>
     next(e);
   }
 }
+
 app.get('/', async (req, res) => {
   res.send('ok');
 });
@@ -45,14 +46,15 @@ app.get(APIPath, (async (req, res) => {
 
 
 app.get(`${APIPath}/by`, async (req, res) => {
+  try {
+    const { page } = req.query;
+    const pageNumber = parseInt(page as string);
 
-  const { page } = req.query;
-  const pageNum = page as unknown as number;
-  console.log('page=', page);
-
-  let tickets = await db.getTicketsByPageNumber(pageNum);
-
-  res.status(200).json(tickets);
+    let tickets = await db.getTicketsByPageNumber(pageNumber);
+    res.status(200).json(tickets);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 app.post(APICloneTicket, (async (req, res) => {
