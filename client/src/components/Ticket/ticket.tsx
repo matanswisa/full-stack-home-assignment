@@ -6,6 +6,7 @@ import { api } from '../../App';
 
 
 interface ListItemProps {
+
     key?: string;
     ticket: Ticket;
     showTicket: () => void;
@@ -37,6 +38,7 @@ export default class TicketListItem extends React.Component<ListItemProps, ListI
 
 
     render() {
+
         const ticket = this.state.ticket;
 
         return (
@@ -47,7 +49,7 @@ export default class TicketListItem extends React.Component<ListItemProps, ListI
                         <footer>
                             <p className='content' style={darkMode ? darkTheme : lightTheme}>{ticket.content}</p>
                             <div className='meta-data'>By {ticket.userEmail} | {new Date(ticket.creationTime).toLocaleString()}</div>
-                            <button className="hidden-ticket" onClick={this.props.showTicket}>HIDE</button>
+                            <button className="hidden-ticket" id='hideButton' onClick={this.props.showTicket}>HIDE</button>
                             <button className="clone-ticket" onClick={() => this.props.cloneTicket(ticket)}>Clone Ticket</button>
                         </footer>
                     </li>

@@ -57,7 +57,7 @@ export class App extends React.PureComponent<{}, AppState> {
 
 
 		return (<ul className='tickets'>
-			{filteredTickets.map((ticket, index) => (ticket.show && <TicketListItem cloneTicket={this.cloneTicket} showTicket={this.updateShowTicket(index)} ticket={ticket} />))}
+			{filteredTickets.map((ticket, index) => (ticket.show && <TicketListItem data-testid={ticket.id} cloneTicket={this.cloneTicket} showTicket={this.updateShowTicket(index)} ticket={ticket} />))}
 		</ul>);
 	}
 
