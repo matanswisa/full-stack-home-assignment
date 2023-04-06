@@ -5,6 +5,7 @@ import TicketListItem from './components/Ticket/ticket';
 import DarkModeToggle from './components/ToggleDarkMode';
 import { ThemeContext, } from './contexts/ThemeContext';
 import { darkTheme, lightTheme } from './constants/themes';
+import Button from './components/Button/button';
 
 export type AppState = {
 	tickets?: Ticket[];
@@ -64,7 +65,6 @@ export class App extends React.PureComponent<{}, AppState> {
 	cloneTicket = (ticket: Ticket) => {
 		const { tickets } = this.state;
 		api.cloneTicket(ticket).then((status) => {
-			console.log(status);
 			this.setState({ tickets: [...(tickets as Ticket[]), ticket] });
 		});
 	}
@@ -125,24 +125,25 @@ export class App extends React.PureComponent<{}, AppState> {
 		return (
 			<ThemeContext.Consumer>{({ darkMode }) => {
 				return (
-					<div className='App' style={!darkMode ? lightTheme : darkTheme}>
-						<main>
-							<h1>Tickets List</h1>
+					// <div className='App' style={!darkMode ? lightTheme : darkTheme}>
+					// 	<main>
+					// 		<h1>Tickets List</h1>
 
-							<button onClick={this.onPrevPageClick} disabled={!page}>Previous page</button>
-							<button onClick={this.onNextPageClick} disabled={results < MAX_PER_PAGE}>Next page</button>
-							<h4>Page Number:{this.state.page + 1}</h4>
+					// 		<button onClick={this.onPrevPageClick} disabled={!page}>Previous page</button>
+					// 		<button onClick={this.onNextPageClick} disabled={results < MAX_PER_PAGE}>Next page</button>
+					// 		<h4>Page Number: {this.state.page + 1}</h4>
 
-							<DarkModeToggle></DarkModeToggle>
+					// 		<DarkModeToggle></DarkModeToggle>
 
-							<button onClick={this.restoreHiddenTickets}>Restore tickets</button>
-							<header>
-								<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)} />
-							</header>
-							{tickets ? <div className='results'>Showing {tickets.length} results</div> : null}
-							{tickets ? this.renderTickets(tickets) : <h2>Loading..</h2>}
-						</main>
-					</div>
+					// 		<button onClick={this.restoreHiddenTickets}>Restore tickets</button>
+					// 		<header>
+					// 			<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)} />
+					// 		</header>
+					// 		{tickets ? <div className='results'>Showing {tickets.length} results</div> : null}
+					// 		{tickets ? this.renderTickets(tickets) : <h2>Loading..</h2>}
+					// 	</main>
+					// </div>
+					<Button />
 				)
 			}}
 			</ThemeContext.Consumer>
